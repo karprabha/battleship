@@ -5,16 +5,11 @@
     "main": "battleship.js",
     "scripts": {
         "test": "jest",
-        "jest-watch": "jest --watch *.js",
+        "jest-watch": "jest --watch",
         "watch": "webpack --watch",
         "start": "set \"BROWSER=none\" && start chrome http://localhost:8080 -incognito && webpack serve --config webpack.dev.js",
         "prepublish": "npm run build",
         "build": "webpack --config webpack.prod.js"
-    },
-    "jest": {
-        "transform": {
-            "^.+\\.jsx?$": "babel-jest"
-        }
     },
     "author": "Prabhakar Yadav",
     "license": "ISC",
@@ -27,6 +22,7 @@
         "eslint-config-prettier": "^8.8.0",
         "eslint-plugin-import": "^2.27.5",
         "html-webpack-plugin": "^5.5.3",
+        "jest": "^29.6.1",
         "prettier": "^3.0.0",
         "style-loader": "^3.3.3",
         "webpack": "^5.88.1",
