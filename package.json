@@ -1,0 +1,37 @@
+{
+    "name": "battleship",
+    "version": "1.0.0",
+    "description": "battleship project",
+    "main": "battleship.js",
+    "scripts": {
+        "test": "jest",
+        "jest-watch": "jest --watch *.js",
+        "watch": "webpack --watch",
+        "start": "set \"BROWSER=none\" && start chrome http://localhost:8080 -incognito && webpack serve --config webpack.dev.js",
+        "prepublish": "npm run build",
+        "build": "webpack --config webpack.prod.js"
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.jsx?$": "babel-jest"
+        }
+    },
+    "author": "Prabhakar Yadav",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/preset-env": "^7.22.7",
+        "babel-jest": "^29.6.1",
+        "css-loader": "^6.8.1",
+        "eslint": "^8.44.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-import": "^2.27.5",
+        "html-webpack-plugin": "^5.5.3",
+        "prettier": "^3.0.0",
+        "style-loader": "^3.3.3",
+        "webpack": "^5.88.1",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^4.15.1",
+        "webpack-merge": "^5.9.0"
+    }
+}
