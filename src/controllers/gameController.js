@@ -43,6 +43,17 @@ const gameController = (gameView) => {
         }
     };
 
+    const handleClick = (cell) => {
+        const cellData = cell.getAttribute("data-cell-number");
+        const x = Math.floor(cellData / 10);
+        const y = cellData % 10;
+
+        const playerMove = player.makeMove([x, y]);
+        if (playerMove.success) {
+            console.log(playerMove.message);
+        }
+    };
+
     const init = () => {
         player = playerModel("Player");
         computer = playerModel("Computer");
@@ -55,15 +66,9 @@ const gameController = (gameView) => {
         placeShipsAtRandomPosition(player.gameBoard, playerBoardCells);
         placeShipsAtRandomPosition(computer.gameBoard, computerBoardCells);
 
-        playerBoardCells.forEach((cell) => {
-            cell.addEventListener("click", () => {
-                console.log("clicked player");
-            });
-        });
-
         computerBoardCells.forEach((cell) => {
             cell.addEventListener("click", () => {
-                console.log("clicked computer");
+                handleClick(cell);
             });
         });
     };

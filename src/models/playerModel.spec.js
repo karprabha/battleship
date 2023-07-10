@@ -13,14 +13,14 @@ describe("playerModel", () => {
         });
     });
 
-    describe("makeMove method", () => {
+    describe("receiveAttack method", () => {
         test("should return success property true if valid move", () => {
-            expect(newPlayerModel.makeMove([0, 0]).success).toBe(true);
+            expect(newPlayerModel.receiveAttack([0, 0]).success).toBe(true);
         });
 
         test("should return success property false if invalid move", () => {
-            newPlayerModel.makeMove([0, 0]);
-            expect(newPlayerModel.makeMove([0, 0]).success).toBe(false);
+            newPlayerModel.receiveAttack([0, 0]);
+            expect(newPlayerModel.receiveAttack([0, 0]).success).toBe(false);
         });
     });
 });
