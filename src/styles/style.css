@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.game-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.board-container {
+    display: grid;
+    width: 50vh;
+    height: 50vh;
+    grid-template-columns: repeat(10, 1fr);
+}
+
+.board-cell {
+    resize: both;
+    border: .5px solid white;
+    background-color: aquamarine;
+}
+
+.ship-cell {
+    background-color: red;
+}
