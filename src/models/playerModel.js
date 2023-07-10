@@ -6,9 +6,10 @@ const playerModel = (name) => {
     const getName = () => name;
     const makeMove = (coordinates) => {
         const result = newGameBoardModel.receiveAttack(coordinates);
-        if (result === "duplicate attack") return false;
+        if (result === "duplicate attack")
+            return { success: false, message: result };
 
-        return true;
+        return { success: true, message: result };
     };
 
     return { newGameBoardModel, getName, makeMove };
