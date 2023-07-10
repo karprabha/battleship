@@ -16,24 +16,43 @@ const gameBoardModel = () => {
     const placeShip = (coordinates, size, isHorizontal) => {
         const [x, y] = coordinates;
         if (isHorizontal) {
-            if (y - 1 >= 0 && gameBoard[x][y - 1] !== 0) return false;
-            if (y + size < 10 && gameBoard[x][y + size] !== 0) return false;
+            if (y + size - 1 >= 10) return false;
 
-            for (let i = 0; i < size; i += 1) {
-                if (y + i >= 10 || gameBoard[x][y + i] !== 0) return false;
-                if (x - 1 >= 0 && gameBoard[x - 1][y + i] !== 0) return false;
-                if (x + 1 < 10 && gameBoard[x + 1][y + i] !== 0) return false;
+            for (let i = -1; i <= 1; i += 1) {
+                for (let j = -1; j <= size; j += 1) {
+                    const u = x + i;
+                    const v = y + j;
+
+                    if (
+                        u >= 0 &&
+                        u < 10 &&
+                        v >= 0 &&
+                        v < 10 &&
+                        gameBoard[u][v] !== 0
+                    )
+                        return false;
+                }
             }
 
             for (let i = 0; i < size; i += 1)
                 gameBoard[x][y + i] = ships.length + 1;
         } else {
-            if (x - 1 >= 0 && gameBoard[x - 1][y] !== 0) return false;
-            if (x + size < 10 && gameBoard[x + size][y] !== 0) return false;
-            for (let i = 0; i < size; i += 1) {
-                if (x + i >= 10 || gameBoard[x + i][y] !== 0) return false;
-                if (y - 1 >= 0 && gameBoard[x + i][y - 1] !== 0) return false;
-                if (y + 1 < 10 && gameBoard[x + i][y + 1] !== 0) return false;
+            if (x + size - 1 >= 10) return false;
+
+            for (let i = -1; i <= size; i += 1) {
+                for (let j = -1; j <= 1; j += 1) {
+                    const u = x + i;
+                    const v = y + j;
+
+                    if (
+                        u >= 0 &&
+                        u < 10 &&
+                        v >= 0 &&
+                        v < 10 &&
+                        gameBoard[u][v] !== 0
+                    )
+                        return false;
+                }
             }
 
             for (let i = 0; i < size; i += 1)
