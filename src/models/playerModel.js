@@ -1,18 +1,18 @@
 import gameBoardModel from "./gameBoardModel";
 
 const playerModel = (name) => {
-    const newGameBoardModel = gameBoardModel();
+    const gameBoard = gameBoardModel();
 
     const getName = () => name;
     const makeMove = (coordinates) => {
-        const result = newGameBoardModel.receiveAttack(coordinates);
+        const result = gameBoard.receiveAttack(coordinates);
         if (result === "duplicate attack")
             return { success: false, message: result };
 
         return { success: true, message: result };
     };
 
-    return { newGameBoardModel, getName, makeMove };
+    return { gameBoard, getName, makeMove };
 };
 
 export default playerModel;
