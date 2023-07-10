@@ -20,7 +20,7 @@ const gameBoardModel = () => {
             if (y + size < 10 && gameBoard[x][y + size] !== 0) return false;
 
             for (let i = 0; i < size; i += 1) {
-                if (y + i >= 10 && gameBoard[x][y + i] !== 0) return false;
+                if (y + i >= 10 || gameBoard[x][y + i] !== 0) return false;
                 if (x - 1 >= 0 && gameBoard[x - 1][y + i] !== 0) return false;
                 if (x + 1 < 10 && gameBoard[x + 1][y + i] !== 0) return false;
             }
@@ -30,12 +30,12 @@ const gameBoardModel = () => {
         } else {
             if (x - 1 >= 0 && gameBoard[x - 1][y] !== 0) return false;
             if (x + size < 10 && gameBoard[x + size][y] !== 0) return false;
-
             for (let i = 0; i < size; i += 1) {
-                if (x + i >= 10 && gameBoard[x + i][y] !== 0) return false;
+                if (x + i >= 10 || gameBoard[x + i][y] !== 0) return false;
                 if (y - 1 >= 0 && gameBoard[x + i][y - 1] !== 0) return false;
                 if (y + 1 < 10 && gameBoard[x + i][y + 1] !== 0) return false;
             }
+
             for (let i = 0; i < size; i += 1)
                 gameBoard[x + i][y] = ships.length + 1;
         }
