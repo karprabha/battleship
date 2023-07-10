@@ -25,3 +25,7 @@
 .ship-cell {
     background-color: red;
 }
+
+.attacked-cell {
+    background-color: grey;
+}

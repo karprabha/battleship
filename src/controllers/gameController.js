@@ -43,14 +43,49 @@ const gameController = (gameView) => {
         }
     };
 
+    const updateGameStatus = (message, isGameOver, coordinates) => {
+        console.log(message);
+        if (isGameOver) {
+            console.log("game-over");
+        }
+
+        gameView.updateGameMessage(message);
+        gameView.renderAttackedCell(coordinates);
+    };
+
+    const computerTurn = () => {
+        let coordinates = getRandomCoordinates();
+        let computerMove = player.receiveAttack(coordinates);
+
+        while (!computerMove.success) {
+            coordinates = getRandomCoordinates();
+            computerMove = player.receiveAttack(coordinates);
+        }
+
+        const { message } = computerMove;
+        const isGameOver = player.gameBoard.areAllShipsDestroyed();
+
+        const [x, y] = coordinates;
+        const cell = document.querySelector(
+            `[data-cell-number="${x * 10 + y}"]`
+        );
+
+        updateGameStatus(message, isGameOver, cell);
+    };
+
     const handleClick = (cell) => {
         const cellData = cell.getAttribute("data-cell-number");
         const x = Math.floor(cellData / 10);
         const y = cellData % 10;
 
-        const playerMove = player.makeMove([x, y]);
+        const playerMove = computer.receiveAttack([x, y]);
         if (playerMove.success) {
-            console.log(playerMove.message);
+            const { message } = playerMove;
+            const isGameOver = computer.gameBoard.areAllShipsDestroyed();
+
+            updateGameStatus(message, isGameOver, cell);
+
+            computerTurn();
         }
     };
 

@@ -3,6 +3,7 @@ import boardView from "./boardView";
 const gameView = () => {
     const playerBoard = document.querySelector(".player-board");
     const computerBoard = document.querySelector(".computer-board");
+    const gameMessage = document.querySelector(".game-message");
 
     playerBoard.appendChild(boardView().boardContainer);
     computerBoard.appendChild(boardView().boardContainer);
@@ -24,7 +25,21 @@ const gameView = () => {
         }
     };
 
-    return { playerBoard, computerBoard, renderShipCells };
+    const updateGameMessage = (message) => {
+        gameMessage.textContent = message;
+    };
+
+    const renderAttackedCell = (cell) => {
+        cell.classList.add("attacked-cell");
+    };
+
+    return {
+        playerBoard,
+        computerBoard,
+        renderShipCells,
+        updateGameMessage,
+        renderAttackedCell,
+    };
 };
 
 export default gameView;
