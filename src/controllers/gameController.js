@@ -1,4 +1,9 @@
 import playerModel from "../models/playerModel";
+import getAttackMessage from "../utils/attackUtils";
+import {
+    getRandomCoordinates,
+    getRandomIsHorizontal,
+} from "../utils/randomUtils";
 
 const gameController = (gameView) => {
     const SHIP_COUNT = 5;
@@ -6,19 +11,6 @@ const gameController = (gameView) => {
 
     let player;
     let computer;
-
-    const getRandomCoordinates = () => {
-        const x = Math.floor(Math.random() * 10);
-        const y = Math.floor(Math.random() * 10);
-
-        return [x, y];
-    };
-
-    const getRandomIsHorizontal = () => {
-        const horizontal = Math.floor(Math.random() * 2);
-
-        return horizontal === 1;
-    };
 
     const placeShipsAtRandomPosition = (board, boardCells) => {
         let placedShipCount = 0;
@@ -29,8 +21,6 @@ const gameController = (gameView) => {
             const shipSize = SHIP_SIZES[placedShipCount];
 
             if (board.placeShip(coordinates, shipSize, isHorizontal)) {
-                console.log(coordinates, isHorizontal, shipSize);
-
                 gameView.renderShipCells(
                     coordinates,
                     shipSize,
@@ -43,34 +33,34 @@ const gameController = (gameView) => {
         }
     };
 
-    const updateGameStatus = (message, isGameOver, coordinates) => {
-        console.log(message);
+    const updateGameStatus = (name, message, isGameOver, cell) => {
         if (isGameOver) {
-            console.log("game-over");
+            gameView.renderGameOver(name);
         }
 
         gameView.updateGameMessage(message);
-        gameView.renderAttackedCell(coordinates);
+        gameView.renderAttackedCell(cell);
     };
 
     const computerTurn = () => {
         let coordinates = getRandomCoordinates();
         let computerMove = player.receiveAttack(coordinates);
 
-        while (!computerMove.success) {
+        while (!computerMove.isValidAttack) {
             coordinates = getRandomCoordinates();
             computerMove = player.receiveAttack(coordinates);
         }
 
-        const { message } = computerMove;
-        const isGameOver = player.gameBoard.areAllShipsDestroyed();
+        const message = getAttackMessage(computerMove);
+        const { areAllShipsDestroyed } = computerMove;
+
+        const isGameOver = areAllShipsDestroyed;
 
         const [x, y] = coordinates;
-        const cell = document.querySelector(
+        const cell = gameView.playerBoard.querySelector(
             `[data-cell-number="${x * 10 + y}"]`
         );
-
-        updateGameStatus(message, isGameOver, cell);
+        updateGameStatus(computer.getName(), message, isGameOver, cell);
     };
 
     const handleClick = (cell) => {
@@ -79,12 +69,12 @@ const gameController = (gameView) => {
         const y = cellData % 10;
 
         const playerMove = computer.receiveAttack([x, y]);
-        if (playerMove.success) {
-            const { message } = playerMove;
-            const isGameOver = computer.gameBoard.areAllShipsDestroyed();
+        if (playerMove.isValidAttack) {
+            const message = getAttackMessage(playerMove);
+            const { areAllShipsDestroyed } = playerMove;
 
-            updateGameStatus(message, isGameOver, cell);
-
+            const isGameOver = areAllShipsDestroyed;
+            updateGameStatus(player.getName(), message, isGameOver, cell);
             computerTurn();
         }
     };
