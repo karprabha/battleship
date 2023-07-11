@@ -4,15 +4,21 @@ const playerModel = (name) => {
     const gameBoard = gameBoardModel();
 
     const getName = () => name;
-    const receiveAttack = (coordinates) => {
-        const result = gameBoard.receiveAttack(coordinates);
-        if (result === "duplicate attack")
-            return { success: false, message: result };
 
-        return { success: true, message: result };
+    const receiveAttack = (coordinates) => {
+        const attackResult = gameBoard.receiveAttack(coordinates);
+
+        return {
+            ...attackResult,
+            playerName: getName(),
+        };
     };
 
-    return { gameBoard, getName, receiveAttack };
+    return {
+        gameBoard,
+        getName,
+        receiveAttack,
+    };
 };
 
 export default playerModel;
