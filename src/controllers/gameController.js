@@ -75,7 +75,7 @@ const gameController = (gameView) => {
 
             const isGameOver = areAllShipsDestroyed;
             updateGameStatus(player.getName(), message, isGameOver, cell);
-            computerTurn();
+            if (!isGameOver) computerTurn();
         }
     };
 
