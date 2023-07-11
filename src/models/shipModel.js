@@ -1,4 +1,4 @@
-const createShip = (shipLength) => {
+const shipModel = (shipLength) => {
     let hitCount = 0;
 
     const registerHit = () => {
@@ -10,4 +10,4 @@ const createShip = (shipLength) => {
     return { isSunk, registerHit };
 };
 
-export default createShip;
+export default shipModel;
