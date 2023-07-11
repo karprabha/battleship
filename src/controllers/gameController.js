@@ -34,12 +34,12 @@ const gameController = (gameView) => {
     };
 
     const updateGameStatus = (name, message, isGameOver, cell) => {
+        gameView.updateGameMessage(message);
+        gameView.renderAttackedCell(cell);
+
         if (isGameOver) {
             gameView.renderGameOver(name);
         }
-
-        gameView.updateGameMessage(message);
-        gameView.renderAttackedCell(cell);
     };
 
     const computerTurn = () => {

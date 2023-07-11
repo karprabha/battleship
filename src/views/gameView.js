@@ -4,6 +4,8 @@ const gameView = () => {
     const playerBoard = document.querySelector(".player-board");
     const computerBoard = document.querySelector(".computer-board");
     const gameMessage = document.querySelector(".game-message");
+    const overlayContainer = document.querySelector(".overlay-container");
+    const gameResult = document.querySelector(".game-result");
 
     playerBoard.appendChild(boardView().boardContainer);
     computerBoard.appendChild(boardView().boardContainer);
@@ -33,12 +35,19 @@ const gameView = () => {
         cell.classList.add("attacked-cell");
     };
 
+    const renderGameOver = (name) => {
+        overlayContainer.classList.toggle("hidden");
+        gameResult.textContent = `${name} won the game !!`;
+    };
+
     return {
         playerBoard,
         computerBoard,
         renderShipCells,
         updateGameMessage,
         renderAttackedCell,
+        renderGameOver,
+        overlayContainer,
     };
 };
 
