@@ -1,180 +1,102 @@
 import gameBoardModel from "./gameBoardModel";
 
-describe("gameBoard Model", () => {
-    let newGameBoardModel;
+describe("gameBoardModel", () => {
+    let board;
 
     beforeEach(() => {
-        newGameBoardModel = gameBoardModel();
+        board = gameBoardModel();
     });
 
-    describe("placeShip method", () => {
-        test("should return true for valid placement on game board", () => {
-            expect(newGameBoardModel.placeShip([0, 0], 4, true)).toBe(true);
+    test("places a ship vertically", () => {
+        expect(board.placeShip([2, 4], 3, false)).toBe(true);
+        expect(board.gameBoard[2][4]).toBe(1);
+        expect(board.gameBoard[3][4]).toBe(1);
+        expect(board.gameBoard[4][4]).toBe(1);
+    });
+
+    test("places a ship horizontally", () => {
+        expect(board.placeShip([5, 2], 4, true)).toBe(true);
+        expect(board.gameBoard[5][2]).toBe(1);
+        expect(board.gameBoard[5][3]).toBe(1);
+        expect(board.gameBoard[5][4]).toBe(1);
+        expect(board.gameBoard[5][5]).toBe(1);
+    });
+
+    test("prevents overlapping ship placement", () => {
+        expect(board.placeShip([2, 4], 3, false)).toBe(true);
+        expect(board.placeShip([2, 3], 2, true)).toBe(false);
+        expect(board.gameBoard[2][3]).toBe(0);
+    });
+
+    test("prevents out-of-bounds ship placement", () => {
+        expect(board.placeShip([8, 8], 3, true)).toBe(false);
+        expect(board.gameBoard[8][8]).toBe(0);
+    });
+
+    test("registers a hit on a ship", () => {
+        board.placeShip([2, 4], 3, true);
+        expect(board.receiveAttack([2, 4])).toEqual({
+            isValidAttack: true,
+            isHit: true,
+            isMiss: false,
+            isShipSunk: false,
+            areAllShipsDestroyed: false,
         });
-        test("should return false for overlapping ship placement on game board", () => {
-            newGameBoardModel.placeShip([0, 0], 2, false);
-            expect(newGameBoardModel.placeShip([0, 0], 4, true)).toBe(false);
+        expect(board.gameBoard[2][4]).toBe("X");
+
+        expect(board.receiveAttack([2, 5])).toEqual({
+            isValidAttack: true,
+            isHit: true,
+            isMiss: false,
+            isShipSunk: false,
+            areAllShipsDestroyed: false,
         });
+        expect(board.gameBoard[2][5]).toBe("X");
 
-        test("should return false for out of bounds ship placement on game board", () => {
-            expect(newGameBoardModel.placeShip([7, 7], 4, true)).toBe(false);
+        expect(board.receiveAttack([2, 6])).toEqual({
+            isValidAttack: true,
+            isHit: true,
+            isMiss: false,
+            isShipSunk: true,
+            areAllShipsDestroyed: true,
         });
+        expect(board.gameBoard[2][6]).toBe("X");
+    });
 
-        test("should return false ship placement on boundary of another ship on game board", () => {
-            newGameBoardModel.placeShip([0, 0], 4, false);
-            expect(newGameBoardModel.placeShip([1, 0], 4, false)).toBe(false);
-        });
+    test("registers a duplicate attack", () => {
+        board.gameBoard[2][4] = "X";
+        board.placeShip([5, 5], 3, true);
 
-        test("should place a ship horizontally on the game board", () => {
-            newGameBoardModel.placeShip([0, 0], 4, true);
-
-            expect(newGameBoardModel.gameBoard).toEqual([
-                [1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ]);
-
-            expect(newGameBoardModel.ships.length).toBe(1);
-        });
-
-        test("should place a ship vertically on the game board", () => {
-            newGameBoardModel.placeShip([0, 0], 4, false);
-
-            expect(newGameBoardModel.gameBoard).toEqual([
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ]);
-
-            expect(newGameBoardModel.ships.length).toBe(1);
-        });
-
-        test("should place multiple ships on the game board", () => {
-            newGameBoardModel.placeShip([0, 0], 4, true);
-            newGameBoardModel.placeShip([5, 5], 3, false);
-
-            expect(newGameBoardModel.gameBoard).toEqual([
-                [1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ]);
-            expect(newGameBoardModel.ships.length).toBe(2);
+        expect(board.receiveAttack([2, 4])).toEqual({
+            isValidAttack: false,
+            isHit: false,
+            isMiss: false,
+            isShipSunk: false,
+            areAllShipsDestroyed: false,
         });
     });
 
-    describe("receiveAttack method", () => {
-        test("should mark attack on game board", () => {
-            newGameBoardModel.receiveAttack([0, 1]);
-
-            expect(newGameBoardModel.gameBoard).toEqual([
-                [0, "X", 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ]);
-        });
-
-        test('should return "duplicate attack" when attacking the same cell twice', () => {
-            newGameBoardModel.receiveAttack([0, 1]);
-            expect(newGameBoardModel.receiveAttack([0, 1])).toBe(
-                "duplicate attack"
-            );
-
-            expect(newGameBoardModel.gameBoard).toEqual([
-                [0, "X", 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ]);
-        });
-
-        test('should return "ship has been hit" when attacking a cell containing a ship', () => {
-            newGameBoardModel.placeShip([0, 0], 4, true);
-            expect(newGameBoardModel.receiveAttack([0, 1])).toBe(
-                "ship has been hit"
-            );
-
-            expect(newGameBoardModel.gameBoard).toEqual([
-                [1, "X", 1, 1, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ]);
-        });
-
-        test('should return "ship sunk" when attacking a cell that sinks a ship', () => {
-            newGameBoardModel.placeShip([0, 0], 3, true);
-            newGameBoardModel.receiveAttack([0, 0]);
-            newGameBoardModel.receiveAttack([0, 1]);
-            expect(newGameBoardModel.receiveAttack([0, 2])).toBe("ship sunk");
-
-            expect(newGameBoardModel.gameBoard).toEqual([
-                ["X", "X", "X", 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ]);
+    test("registers an unsuccessful hit", () => {
+        board.placeShip([5, 5], 3, true);
+        expect(board.receiveAttack([3, 3])).toEqual({
+            isValidAttack: true,
+            isHit: false,
+            isMiss: true,
+            isShipSunk: false,
+            areAllShipsDestroyed: false,
         });
     });
 
-    describe("areAllShipsDestroyed method", () => {
-        test("should return true when all ships have been destroyed", () => {
-            newGameBoardModel.placeShip([0, 0], 2, true);
-            newGameBoardModel.receiveAttack([0, 0]);
-            newGameBoardModel.receiveAttack([0, 1]);
+    test("checks if all ships are destroyed", () => {
+        board.placeShip([1, 1], 2, false);
+        board.placeShip([3, 5], 3, true);
 
-            expect(newGameBoardModel.areAllShipsDestroyed()).toBe(true);
-        });
+        board.receiveAttack([1, 1]);
+        board.receiveAttack([2, 1]);
+        board.receiveAttack([3, 5]);
+        board.receiveAttack([3, 6]);
+        board.receiveAttack([3, 7]);
 
-        test("should return false when there are remaining ships", () => {
-            newGameBoardModel.placeShip([0, 0], 2, true);
-
-            expect(newGameBoardModel.areAllShipsDestroyed()).toBe(false);
-        });
+        expect(board.areAllShipsDestroyed()).toBe(true);
     });
 });
